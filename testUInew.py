@@ -1,6 +1,6 @@
 from tkinter import *
 root = Tk()
-root.option_add("*Font", "consolas 20")#*ฟร้อนทั้งหมดให้standardเป็นconsolasขนาด25
+root.option_add("*Font", "consolas 20")#*ฟร้อนทั้งหมดให้standardเป็นconsolasขนาด20
 root.configure(bg='MediumPurple1')#สีbackgroundทั้งหมด
 root.title('Project music player by PPKG')
 first_line = Label(root, text="Project Music Player by PPKG", font=('consolas', 12), fg='yellow', bg="IndianRed1", width = 35)
