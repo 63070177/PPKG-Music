@@ -1,13 +1,13 @@
 from tkinter import *
 root = Tk()
-root.option_add("*Font", "consolas 25")#*ฟร้อนทั้งหมดให้standardเป็นconsolasขนาด25
+root.option_add("*Font", "consolas 20")#*ฟร้อนทั้งหมดให้standardเป็นconsolasขนาด25
 root.configure(bg='MediumPurple1')#สีbackgroundทั้งหมด
 root.title('Project music player by PPKG')
-first_line = Label(root, text="Project Music Player", bg="IndianRed1", width = 35)
-second_line = Label(root, text="Name of this song: %s", bg='turquoise1', width = 35)
+first_line = Label(root, text="Project Music Player by PPKG", font=('consolas', 12), fg='yellow', bg="IndianRed1", width = 35)
+second_line = Label(root, text="Name of this song: %s", fg='IndianRed2', bg='turquoise1', width = 35)
 
 #Buttonทำปุ่ม
-button_addfile = Button(root, text='Add file', font=("Ink Free Reaular", 12), width = 10, bg='khaki1')
+button_addfile = Button(root, text='Add file', font=("consolas", 12), width = 10, bg='khaki1')
 button_play = Button(root, text='▶', width = 8, bg='plum1')
 button_pause = Button(root, text='⏸', width = 8, bg='plum1')
 button_next = Button(root, text='⏭️', width = 8, bg='plum1')
