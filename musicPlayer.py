@@ -184,7 +184,7 @@ class Player(tk.Frame):
 
 if __name__ == '__main__':
 	root = tk.Tk()
-	root.geometry('600x400')
+	root.geometry('900x600')
 	root.title('Music Player')
 
 	img = PhotoImage(file='icons/music.gif')
