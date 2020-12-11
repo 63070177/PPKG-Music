@@ -63,7 +63,7 @@ class Player(tk.Frame):
 
 	def control_widgets(self):
 		self.loadSongs = tk.Button(self.controls, bg='grey', fg='white', font=10)
-		self.loadSongs['text'] = 'Load Songs'
+		self.loadSongs['text'] = 'Add'
 		self.loadSongs['command'] = self.retrieve_songs
 		self.loadSongs.grid(row=0, column=0, padx=10)
 
