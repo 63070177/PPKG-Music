@@ -1,117 +1,197 @@
-from tkinter import *
-from tkinter import filedialog
-from pygame import *
-import pygame
-import threading
 import os
-import tkinter.ttk as ttk
-from multiprocessing import Process
+import pickle
+import tkinter as tk
+from tkinter import filedialog
+from tkinter import PhotoImage
+from pygame import mixer
 
-class MusicPlayer:
-    def __init__(self, window):
-        window.geometry('420x400'); window.title('Music Player'); window.resizable(0,0)
-        self.lst = Listbox(window	,height=10,width=60)
-        self.lst.grid (row = 0, column = 0)
-        self.scrollbar = Scrollbar (Frame(self.lst),orient = VERTICAL,command = self.lst.yview)
-        self.scrollbar.pack(side=RIGHT,fill=Y)
-        self.lst ['yscrollcommand'] = self.scrollbar.set
-        self.scrollbar.grid (row = 20, column = 2, sticky = (N, S))
-        self.lst.pack()	
+class Player(tk.Frame):
+	def __init__(self, master=None):
+		super().__init__(master)
+		self.master = master
+		self.pack()
+		mixer.init()
 
-        LoadFie = Button(window, text = 'Open Song',  width = 10, font = ('Times', 10), command = self.loadfie)
-        LoadFolder = Button(window, text = 'Open Floder',  width = 10, font = ('Times', 10), command = self.loadfolder)
-        Play = Button(window, text = 'Play',  width = 10,font = ('Times', 10), command = self.play)
-        Pause = Button(window,text = 'Pause',  width = 10, font = ('Times', 10), command = self.pause)
-        Stop = Button(window ,text = 'Stop',  width = 10, font = ('Times', 10), command = self.stop)
-        VolUp = Button(window ,text = '+',  width = 5, font = ('Times', 10), command = self.volup)
-        VolDown = Button(window ,text = '-',  width = 5, font = ('Times', 10), command = self.voldown)
-        PrevSong = Button(window ,text = '<<',  width = 5, font = ('Times', 10), command = self.prevSong)
-        NextSong = Button(window ,text = '>>',  width = 5, font = ('Times', 10), command = self.nextSong)
-        Resume = Button(window,text = 'Resume',  width = 10, font = ('Times', 10), command = self.resume)
-        self.pb = ttk.Progressbar(window, orient = HORIZONTAL, length=100, mode='determinate')
-        self.pb.pack()
-        LoadFie.place(x=5,y=20);LoadFolder.place(x=110,y=20);Play.place(x=220,y=20);Pause.place(x=330,y=20);Stop.place(x=5,y=60);VolUp.place(x=110,y=60);VolDown.place(x=160,y=60);PrevSong.place(x=220,y=60);NextSong.place(x=270,y=60);Resume.place(x=330,y=60);self.lst.place(x=5,y=120);self.pb.place(x=20,y=300)
-        self.music_file = False
-        self.playing_state = False
-        self.lst_pos=1
-        self.musicdirs = []
-        mixer.init()
+		if os.path.exists('songs.pickle'):
+			with open('songs.pickle', 'rb') as f:
+				self.playlist = pickle.load(f)
+		else:
+			self.playlist=[]
 
-    def loadfie(self):
-        self.lst.insert(self.lst_pos,filedialog.askopenfilename())
+		self.current = 0
+		self.paused = True
+		self.played = False
 
-    def loadfolder(self):
-    	sourcePath = filedialog.askdirectory()
-    	self.dirs = os.listdir(sourcePath)
-    	self.lst_pos = self.lst.size()
-    	for file in self.dirs:
-    		if file:
-    			if file.endswith('.mp3'):
-	        		self.lst.insert(self.lst_pos,sourcePath + '/' + file)
-	        		self.musicdirs.append(sourcePath + '/' + file)
-	        		self.lst_pos=self.lst_pos+1
-    	self.scrollbar.config(command = self.lst.yview)
+		self.create_frames()
+		self.track_widgets()
+		self.control_widgets()
+		self.tracklist_widgets()
 
-    def play(self):
+		self.master.bind('<Left>', self.prev_song)
+		self.master.bind('<space>', self.play_pause_song)
+		self.master.bind('<Right>', self.next_song)
 
-    	if self.lst.curselection():
-    		if self.lst.get(self.lst.curselection()):
-    			self.lst_pos=self.lst.curselection()
-    			self.music_file=self.lst.get(self.lst.curselection())
-    			mixer.music.load(self.music_file)
-    			mixer.music.play()
-    			self.playing_state = True
+	def create_frames(self):
+		self.track = tk.LabelFrame(self, text='Song Track', 
+					font=("times new roman",15,"bold"),
+					bg="black",fg="white",bd=5,relief=tk.GROOVE)
+		self.track.config(width=410,height=300)
+		self.track.grid(row=0, column=0, padx=10)
 
-    def prevSong(self):
-    	if self.lst.curselection() and self.playing_state == True:
-    		if self.lst.get(self.lst.curselection()[0]):
-    			self.lst_pos=self.lst.curselection()[0] - 1
-    			if self.lst_pos<0:
-    				self.lst_pos=self.lst.size()-1
-    			print(self.lst_pos)
-    			self.lst.selection_clear(0,END)
-    			self.lst.selection_set(first=self.lst_pos)
-    			self.lst.activate(self.lst_pos)
-    			self.lst.index(self.lst_pos)
-    			self.music_file=self.lst.get(self.lst.curselection())
-    			mixer.music.load(self.music_file)
-    			mixer.music.play()
-    			self.playing_state = True
-                
-    def nextSong(self):
-    	if self.lst.curselection():
-    		if self.lst.get(self.lst.curselection()[0]) and self.playing_state == True:
-    			self.lst_pos=self.lst.curselection()[0] + 1
-    			if self.lst_pos>self.lst.size()-1:
-    				self.lst_pos=0
-    			print(self.lst_pos)
-    			self.lst.selection_clear(0,END)
-    			self.lst.selection_set(first=self.lst_pos)
-    			self.lst.activate(self.lst_pos)
-    			self.lst.index(self.lst_pos)
-    			self.music_file=self.lst.get(self.lst.curselection())
-    			mixer.music.load(self.music_file)
-    			mixer.music.play()
-    			self.playing_state = True
+		self.tracklist = tk.LabelFrame(self, text=f'PlayList - {str(len(self.playlist))}',
+							font=("times new roman",15,"bold"),
+							bg="grey",fg="white",bd=5,relief=tk.GROOVE)
+		self.tracklist.config(width=190,height=400)
+		self.tracklist.grid(row=0, column=1, rowspan=3, pady=5)
 
-    def pause(self):
-            mixer.music.pause()
-            self.playing_state=False
-    def resume(self):
-            mixer.music.unpause()
-            self.playing_state = False
-    def volup(self):
-	    mixer.music.set_volume(min(1.0,mixer.music.get_volume()+0.1))
-    def voldown(self):
-	    mixer.music.set_volume(max(0.0,mixer.music.get_volume()-0.1))
-    def stop(self):
-        mixer.music.stop()
-        self.playing_state = False
+		self.controls = tk.LabelFrame(self,
+							font=("times new roman",15,"bold"),
+							bg="white",fg="white",bd=2,relief=tk.GROOVE)
+		self.controls.config(width=410,height=80)
+		self.controls.grid(row=2, column=0, pady=5, padx=10)
 
-if __name__=='__main__':
-	root = Tk()
-	app= MusicPlayer(root)
-	barThread = threading.Thread(target=1, args=(1,))
-	barThread.daemon=True
-	barThread.start()
-	root.mainloop()
+	def track_widgets(self):
+		self.canvas = tk.Label(self.track, image=img)
+		self.canvas.configure(width=400, height=240)
+		self.canvas.grid(row=0,column=0)
+
+		self.songtrack = tk.Label(self.track, font=("times new roman",16,"bold"),
+						bg="black",fg="white")
+		self.songtrack['text'] = 'PPKG-Music'
+		self.songtrack.config(width=30, height=1)
+		self.songtrack.grid(row=1,column=0,padx=10)
+
+	def control_widgets(self):
+		self.loadSongs = tk.Button(self.controls, bg='grey', fg='white', font=10)
+		self.loadSongs['text'] = 'Load Songs'
+		self.loadSongs['command'] = self.retrieve_songs
+		self.loadSongs.grid(row=0, column=0, padx=10)
+
+		self.prev = tk.Button(self.controls, image=prev)
+		self.prev['command'] = self.prev_song
+		self.prev.grid(row=0, column=1)
+
+		self.pause = tk.Button(self.controls, image=pause)
+		self.pause['command'] = self.pause_song
+		self.pause.grid(row=0, column=2)
+
+		self.next = tk.Button(self.controls, image=next_)
+		self.next['command'] = self.next_song
+		self.next.grid(row=0, column=3)
+
+		self.volume = tk.DoubleVar(self)
+		self.slider = tk.Scale(self.controls, from_ = 0, to = 10, orient = tk.HORIZONTAL)
+		self.slider['variable'] = self.volume
+		self.slider.set(8)
+		mixer.music.set_volume(0.8)
+		self.slider['command'] = self.change_volume
+		self.slider.grid(row=0, column=4, padx=5)
+
+
+	def tracklist_widgets(self):
+		self.scrollbar = tk.Scrollbar(self.tracklist, orient=tk.VERTICAL)
+		self.scrollbar.grid(row=0,column=1, rowspan=5, sticky='ns')
+
+		self.list = tk.Listbox(self.tracklist, selectmode=tk.SINGLE,
+					 yscrollcommand=self.scrollbar.set, selectbackground='sky blue')
+		self.enumerate_songs()
+		self.list.config(height=22)
+		self.list.bind('<Double-1>', self.play_song) 
+
+		self.scrollbar.config(command=self.list.yview)
+		self.list.grid(row=0, column=0, rowspan=5)
+
+	def retrieve_songs(self):
+		self.songlist = []
+		directory = filedialog.askdirectory()
+		for root_, _, files in os.walk(directory):
+				for file in files:
+					if os.path.splitext(file)[1] == '.mp3':
+						path = (root_ + '/' + file).replace('\\','/')
+						self.songlist.append(path)
+
+		with open('songs.pickle', 'wb') as f:
+			pickle.dump(self.songlist, f)
+		self.playlist = self.songlist
+		self.tracklist['text'] = f'PlayList - {str(len(self.playlist))}'
+		self.list.delete(0, tk.END)
+		self.enumerate_songs()
+
+	def enumerate_songs(self):
+		for index, song in enumerate(self.playlist):
+			self.list.insert(index, os.path.basename(song))
+
+	def play_pause_song(self, event):
+		if self.paused:
+			self.play_song()
+		else:
+			self.pause_song()
+
+	def play_song(self, event=None):
+		if event is not None:
+			self.current = self.list.curselection()[0]
+			for i in range(len(self.playlist)):
+				self.list.itemconfigure(i, bg="white")
+
+		print(self.playlist[self.current])
+		mixer.music.load(self.playlist[self.current])
+		self.songtrack['anchor'] = 'w' 
+		self.songtrack['text'] = os.path.basename(self.playlist[self.current])
+
+		self.pause['image'] = play
+		self.paused = False
+		self.played = True
+		self.list.activate(self.current) 
+		self.list.itemconfigure(self.current, bg='sky blue')
+
+		mixer.music.play()
+
+	def pause_song(self):
+		if not self.paused:
+			self.paused = True
+			mixer.music.pause()
+			self.pause['image'] = pause
+		else:
+			if self.played == False:
+				self.play_song()
+			self.paused = False
+			mixer.music.unpause()
+			self.pause['image'] = play
+
+	def prev_song(self, event=None):
+		self.master.focus_set()
+		if self.current > 0:
+			self.current -= 1
+		else:
+			self.current = 0
+		self.list.itemconfigure(self.current + 1, bg='white')
+		self.play_song()
+
+	def next_song(self, event=None):
+		self.master.focus_set()
+		if self.current < len(self.playlist) - 1:
+			self.current += 1
+		else:
+			self.current = 0
+		self.list.itemconfigure(self.current - 1, bg='white')
+		self.play_song()
+
+	def change_volume(self, event=None):
+		self.v = self.volume.get()
+		mixer.music.set_volume(self.v / 10)
+
+#แก้ไข UI
+
+if __name__ == '__main__':
+	root = tk.Tk()
+	root.geometry('600x400')
+	root.title('Music Player')
+
+	img = PhotoImage(file='icons/music.gif')
+	next_ = PhotoImage(file = 'icons/next.gif')
+	prev = PhotoImage(file='icons/previous.gif')
+	play = PhotoImage(file='icons/play.gif')
+	pause = PhotoImage(file='icons/pause.gif')
+
+	app = Player(master=root)
+	app.mainloop()
