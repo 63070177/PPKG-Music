@@ -33,19 +33,19 @@ class Player(tk.Frame):
 
 	def create_frames(self):
 		self.track = tk.LabelFrame(self, text='Song Track', 
-					font=("times new roman",15,"bold"),
+					font=("Arial",15,"bold"),
 					bg="black",fg="white",bd=5,relief=tk.GROOVE)
 		self.track.config(width=410,height=300)
 		self.track.grid(row=0, column=0, padx=10)
 
 		self.tracklist = tk.LabelFrame(self, text=f'PlayList - {str(len(self.playlist))}',
-							font=("times new roman",15,"bold"),
+							font=("Arial",15,"bold"),
 							bg="grey",fg="white",bd=5,relief=tk.GROOVE)
 		self.tracklist.config(width=190,height=400)
 		self.tracklist.grid(row=0, column=1, rowspan=3, pady=5)
 
 		self.controls = tk.LabelFrame(self,
-							font=("times new roman",15,"bold"),
+							font=("Arial",15,"bold"),
 							bg="white",fg="white",bd=2,relief=tk.GROOVE)
 		self.controls.config(width=410,height=80)
 		self.controls.grid(row=2, column=0, pady=5, padx=10)
@@ -55,18 +55,13 @@ class Player(tk.Frame):
 		self.canvas.configure(width=400, height=240)
 		self.canvas.grid(row=0,column=0)
 
-		self.songtrack = tk.Label(self.track, font=("times new roman",16,"bold"),
+		self.songtrack = tk.Label(self.track, font=("Arial",16,"bold"),
 						bg="black",fg="white")
 		self.songtrack['text'] = 'PPKG-Music'
 		self.songtrack.config(width=30, height=1)
 		self.songtrack.grid(row=1,column=0,padx=10)
 
 	def control_widgets(self):
-		self.loadSongs = tk.Button(self.controls, bg='grey', fg='white', font=10)
-		self.loadSongs['text'] = 'Add'
-		self.loadSongs['command'] = self.retrieve_songs
-		self.loadSongs.grid(row=0, column=0, padx=10)
-
 		self.prev = tk.Button(self.controls, image=prev)
 		self.prev['command'] = self.prev_song
 		self.prev.grid(row=0, column=1)
@@ -90,7 +85,7 @@ class Player(tk.Frame):
 
 	def tracklist_widgets(self):
 		self.scrollbar = tk.Scrollbar(self.tracklist, orient=tk.VERTICAL)
-		self.scrollbar.grid(row=0,column=1, rowspan=5, sticky='ns')
+		self.scrollbar.grid(row=0,column=1, rowspan=4, sticky='ns')
 
 		self.list = tk.Listbox(self.tracklist, selectmode=tk.SINGLE,
 					 yscrollcommand=self.scrollbar.set, selectbackground='sky blue')
@@ -99,7 +94,12 @@ class Player(tk.Frame):
 		self.list.bind('<Double-1>', self.play_song) 
 
 		self.scrollbar.config(command=self.list.yview)
-		self.list.grid(row=0, column=0, rowspan=5)
+		self.list.grid(row=0, column=0, rowspan=4)
+		
+		self.loadSongs = tk.Button(self.tracklist, bg='white', fg='black', font=10)
+		self.loadSongs['text'] = 'add'
+		self.loadSongs['command'] = self.retrieve_songs
+		self.loadSongs.grid(row=4, column=0)
 
 	def retrieve_songs(self):
 		self.songlist = []
