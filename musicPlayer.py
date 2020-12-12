@@ -34,19 +34,19 @@ class Player(tk.Frame):
 	def create_frames(self):
 		self.config(bg='mediumorchid1')
 		self.track = tk.LabelFrame(self, text='Song Track', 
-					font=("times new roman",15,"bold"),
+					font=("helvetica",15,"bold"),
 					bg="Yellow",fg="midnight blue",bd=5,relief=tk.GROOVE)
 		self.track.config(width=250,height=300)
 		self.track.grid(row=0, column=0, padx=10, pady=5)
 
 		self.tracklist = tk.LabelFrame(self, text=f'PlayList - {str(len(self.playlist))}',
-							font=("times new roman",15,"bold"),
-							bg="midnight blue",fg="white",bd=5,relief=tk.GROOVE)
+							font=("helvetica",15,"bold"),
+							bg="midnight blue",fg="white")
 		self.tracklist.config(width=190,height=400)
 		self.tracklist.grid(row=0, column=1, rowspan=3, pady=5)
 
 		self.controls = tk.LabelFrame(self,
-							font=("times new roman",15,"bold"),
+							font=("helvetica",15,"bold"),
 							bg="royalblue1",fg="white",bd=2,relief=tk.GROOVE)
 		self.controls.config(width=410,height=80)
 		self.controls.grid(row=2, column=0, pady=5, padx=10)
@@ -56,7 +56,7 @@ class Player(tk.Frame):
 		self.canvas.configure(width=300, height=240)
 		self.canvas.grid(row=0,column=0)
 
-		self.songtrack = tk.Label(self.track, font=("times new roman",16,"bold"),
+		self.songtrack = tk.Label(self.track, font=("helvetica",16,"bold"),
 						bg="midnight blue",fg="white")
 		self.songtrack['text'] = 'PPKG-Music'
 		self.songtrack.config(width=30, height=1)
@@ -97,13 +97,13 @@ class Player(tk.Frame):
 		self.scrollbar.grid(row=0,column=1, rowspan=4, sticky='ns')
 
 		self.list = tk.Listbox(self.tracklist, selectmode=tk.SINGLE,
-					 yscrollcommand=self.scrollbar.set, selectbackground='sky blue')
+					 yscrollcommand=self.scrollbar.set, selectbackground='royalblue1')
 		self.enumerate_songs()
-		self.list.config(height=18)
+		self.list.config(height=15)
 		self.list.bind('<Double-1>', self.play_song) 
 
 		self.scrollbar.config(command=self.list.yview)
-		self.list.grid(row=0, column=0, rowspan=5)
+		self.list.grid(row=0, column=0, rowspan=4)
 
 		self.loadSongs = tk.Button(self.tracklist, bg="yellow", fg='midnight blue', font='consolas 10')
 		self.loadSongs['text'] = 'Add🎵'
@@ -151,7 +151,7 @@ class Player(tk.Frame):
 		self.paused = False
 		self.played = True
 		self.list.activate(self.current) 
-		self.list.itemconfigure(self.current, bg='sky blue')
+		self.list.itemconfigure(self.current, bg='royalblue1')
 
 		mixer.music.play()
 
@@ -193,7 +193,7 @@ class Player(tk.Frame):
 
 if __name__ == '__main__':
 	root = tk.Tk()
-	root.geometry('650x370')
+	root.geometry('770x440')
 	root.title('Music Player')
 	root.configure(bg='mediumorchid1')
 
