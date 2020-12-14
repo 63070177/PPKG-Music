@@ -87,7 +87,7 @@ class Player(tk.Frame):
 		self.volume = tk.DoubleVar(self)
 		self.slider = tk.Scale(self.controls, from_ = 0, to = 10, orient = tk.HORIZONTAL, bg='white', fg='blue4')
 		self.slider['variable'] = self.volume
-		self.slider.set(1)
+		self.slider.set(5)
 		mixer.music.set_volume(0.1)
 		self.slider['command'] = self.change_volume
 		self.slider.grid(row=0, column=6, padx=5)
