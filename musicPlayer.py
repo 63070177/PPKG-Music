@@ -195,9 +195,10 @@ class Player(tk.Frame):
 
 	def random_song(self, event=None):
 		import random
-		random_num = random.randrange(0, len(self.playlist) + 1)
+		random_num = random.randrange(0, len(self.playlist))
 		random_file = self.playlist[random_num]
 		mixer.music.load(random_file)
+		self.songtrack['text'] = os.path.basename(self.playlist[random_num])
 		mixer.music.play()
 
 #แก้ไข UI
@@ -208,13 +209,13 @@ if __name__ == '__main__':
 	root.title('Music Player')
 	root.configure(bg='mediumorchid1')
 
-	img = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/music.gif')
-	next_ = PhotoImage(file = 'C:/Users/acer/Desktop/Project/icons/next.png')
-	prev = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/prev.png')
-	play = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/play.png')
-	pause = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/pause.png')
-	repeat = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/repeat.png')
-	random = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/dice.png')
+	img = PhotoImage(file='icons/music.gif')
+	next_ = PhotoImage(file = 'icons/next.png')
+	prev = PhotoImage(file='icons/prev.png')
+	play = PhotoImage(file='icons/play.png')
+	pause = PhotoImage(file='icons/pause.png')
+	repeat = PhotoImage(file='icons/repeat.png')
+	random = PhotoImage(file='icons/dice.png')
 
 	app = Player(master=root)
 	app.mainloop()
