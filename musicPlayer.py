@@ -1,4 +1,5 @@
 import os
+import random
 import pickle
 import tkinter as tk
 from tkinter import filedialog
@@ -64,7 +65,7 @@ class Player(tk.Frame):
 
 	def control_widgets(self):
 		self.random = tk.Button(self.controls, image=random, bg='white')
-		#self.repeat['command'] = self.retrieve_songs
+		self.random['command'] = self.random_song
 		self.random.grid(row=0, column=0, padx=7)
 
 		self.prev = tk.Button(self.controls, image=prev, bg='white')
@@ -80,14 +81,14 @@ class Player(tk.Frame):
 		self.next.grid(row=0, column=3)
 		
 		self.repeat = tk.Button(self.controls, image=repeat, bg='white')
-		#self.repeat['command'] = self.retrieve_songs
+		self.repeat['command'] = self.repeat_songs
 		self.repeat.grid(row=0, column=4, padx=7)
 
 		self.volume = tk.DoubleVar(self)
 		self.slider = tk.Scale(self.controls, from_ = 0, to = 10, orient = tk.HORIZONTAL, bg='white', fg='blue4')
 		self.slider['variable'] = self.volume
-		self.slider.set(8)
-		mixer.music.set_volume(0.8)
+		self.slider.set(1)
+		mixer.music.set_volume(0.1)
 		self.slider['command'] = self.change_volume
 		self.slider.grid(row=0, column=6, padx=5)
 
@@ -150,7 +151,7 @@ class Player(tk.Frame):
 		self.pause['image'] = play
 		self.paused = False
 		self.played = True
-		self.list.activate(self.current) 
+		self.list.activate(self.current)
 		self.list.itemconfigure(self.current, bg='royalblue1')
 
 		mixer.music.play()
@@ -189,6 +190,16 @@ class Player(tk.Frame):
 		self.v = self.volume.get()
 		mixer.music.set_volume(self.v / 10)
 
+	def repeat_songs(self, event=None): #this function is called when clicking on REPEAT button.
+		mixer.music.play(-1)
+
+	def random_song(self, event=None):
+		import random
+		random_num = random.randrange(0, len(self.playlist) + 1)
+		random_file = self.playlist[random_num]
+		mixer.music.load(random_file)
+		mixer.music.play()
+
 #แก้ไข UI
 
 if __name__ == '__main__':
@@ -197,13 +208,13 @@ if __name__ == '__main__':
 	root.title('Music Player')
 	root.configure(bg='mediumorchid1')
 
-	img = PhotoImage(file='icons/music.gif')
-	next_ = PhotoImage(file = 'icons/next.png')
-	prev = PhotoImage(file='icons/prev.png')
-	play = PhotoImage(file='icons/play.png')
-	pause = PhotoImage(file='icons/pause.png')
-	repeat = PhotoImage(file='icons/repeat.png')
-	random = PhotoImage(file='icons/dice.png')
+	img = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/music.gif')
+	next_ = PhotoImage(file = 'C:/Users/acer/Desktop/Project/icons/next.png')
+	prev = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/prev.png')
+	play = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/play.png')
+	pause = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/pause.png')
+	repeat = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/repeat.png')
+	random = PhotoImage(file='C:/Users/acer/Desktop/Project/icons/dice.png')
 
 	app = Player(master=root)
 	app.mainloop()
