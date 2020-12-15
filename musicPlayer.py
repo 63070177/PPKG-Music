@@ -83,10 +83,9 @@ class Player(tk.Frame):
 		self.repeat = tk.Button(self.controls, image=repeat, bg='white')
 		self.repeat['command'] = self.repeat_songs
 		self.repeat.grid(row=0, column=4, padx=7)
-
-		self.volume = tk.DoubleVar(self)
+		
 		self.slider = tk.Scale(self.controls, from_ = 0, to = 10, orient = tk.HORIZONTAL, bg='white', fg='blue4')
-		self.slider['variable'] = self.volume
+		self.slider['variable'] = tk.DoubleVar(self)
 		self.slider.set(5)
 		mixer.music.set_volume(0.1)
 		self.slider['command'] = self.change_volume
